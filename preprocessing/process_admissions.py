@@ -41,3 +41,10 @@ def group_admission_type(df):
     df['admission_type'].replace(['URGENT'], 'EMERGENCY', inplace=True)
 
     return df
+
+
+def clean_df(df):
+    # Drop irrelevant columns
+    columns_to_drop = ['row_id', 'admittime', 'dischtime', 'deathtime', 'insurance', 'language', 'religion',
+                       'marital_status', 'edregtime', 'edouttime']
+    return df.drop(columns=columns_to_drop)

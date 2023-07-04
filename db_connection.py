@@ -44,6 +44,15 @@ def query_data(query, con):
     return result_df
 
 
+def select_table(table_name, con):
+    """
+    Executes and SQL SELECT * query on a specified table
+    """
+    query = "SELECT * FROM {};".format(table_name)
+    df = pd.read_sql_query(query, con)
+    return df
+
+
 def query_sql_file(fname, con):
     """
     Executes an SQL file with multiple queries on a database connection and returns the results as a DataFrame
