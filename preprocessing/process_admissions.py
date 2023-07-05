@@ -46,5 +46,5 @@ def group_admission_type(df):
 def clean_df(df):
     # Drop irrelevant columns
     columns_to_drop = ['row_id', 'admittime', 'dischtime', 'deathtime', 'insurance', 'language', 'religion',
-                       'marital_status', 'edregtime', 'edouttime']
+                       'marital_status', 'edregtime', 'edouttime', 'discharge_location', 'has_chartevents_data']
     return df.drop(columns=columns_to_drop)
