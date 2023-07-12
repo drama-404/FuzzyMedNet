@@ -27,5 +27,5 @@ def calc_age_at_admission(df):
 
 def clean_df(df):
     # Drop irrelevant columns
-    columns_to_drop = ['row_id', 'dob', 'dod', 'dod_hosp', 'dod_ssn']
+    columns_to_drop = ['row_id', 'dod', 'dod_hosp', 'dod_ssn', 'first_admittime']
     return df.drop(columns=columns_to_drop)

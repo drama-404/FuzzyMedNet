@@ -36,6 +36,13 @@ def group_ethnicities(df):
     return df
 
 
+def group_admission_location(df):
+    # Grouping all types of TRANSFER categories into one
+    df['admission_location'] = df['admission_location'].apply(lambda x: 'TRANSFER' if ('TRANSFER' in x) or ('TRSF' in x) else x)
+
+    return df
+
+
 def group_admission_type(df):
     # Grouping the URGENT & EMERGENCY type into a single category
     df['admission_type'].replace(['URGENT'], 'EMERGENCY', inplace=True)
@@ -45,6 +52,13 @@ def group_admission_type(df):
 
 def clean_df(df):
     # Drop irrelevant columns
-    columns_to_drop = ['row_id', 'admittime', 'dischtime', 'deathtime', 'insurance', 'language', 'religion',
+    columns_to_drop = ['row_id', 'dischtime', 'deathtime', 'insurance', 'language', 'religion',
                        'marital_status', 'edregtime', 'edouttime', 'discharge_location', 'has_chartevents_data']
     return df.drop(columns=columns_to_drop)
+
+
+def calc_age(df):
+    df['age_at_admission'] = df['admittime'].dt.year - df['dob'].dt.year
+    df['age_at_admission'] = df['age_at_admission'].apply(lambda x: 89 if x > 89 else x)
+
+    return df
