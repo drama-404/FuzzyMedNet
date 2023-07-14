@@ -71,9 +71,7 @@ FROM
         WHEN itemid = 51300 THEN 'WBC'
         WHEN itemid = 51301 THEN 'WBC'
       ELSE null
-    END as label
-  , -- add in some sanity checks on the values
-  -- the where clause below requires all valuenum to be > 0, so these are only upper limit checks
+    END as label,
     CASE
       WHEN itemid = 50862 and valuenum >    10 THEN null -- g/dL 'ALBUMIN'
       WHEN itemid = 50868 and valuenum > 10000 THEN null -- mEq/L 'ANION GAP'

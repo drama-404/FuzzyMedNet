@@ -14,7 +14,6 @@ WITH pvt AS (
       WHEN itemid in (762,226512) AND valuenum > 0 THEN 9 -- Weight at Admission
       ELSE NULL END AS vitalid,
       -- convert F to C
-      CASE WHEN itemid IN (1044,223791) THEN value ELSE NULL END AS valuenum,
       CASE WHEN itemid IN (223761,678) THEN (valuenum-32)/1.8 ELSE valuenum END AS valuenum
   FROM icustays ie
   LEFT JOIN chartevents ce
@@ -32,7 +31,7 @@ WITH pvt AS (
     646, 220277, -- SpO2
     807, 811, 1529, 3745, 3744, 225664, 220621, 226537, -- GLUCOSE
     223762, 676, 223761, 678, -- TEMPERATURE
-    762,226512,       -- WEIGHT
+    762,226512       -- WEIGHT
   )
 )
 SELECT pvt.hadm_id, pvt.icustay_id, pvt.vitalid, pvt.chart_hour, pvt.valuenum

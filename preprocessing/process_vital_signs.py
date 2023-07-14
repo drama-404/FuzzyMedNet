@@ -39,6 +39,12 @@ def define_limits():
     return vital_signs_limits
 
 
+def get_index(diagnosis):
+    categories = list(process_diagnoses.get_categories().keys())
+    index = categories.index(diagnosis) + 1
+    return '0' + str(index) if index < 10 else str(index)
+
+
 def visualize_signs(df, diagnosis):
     df_filtered = df[df[diagnosis] == 1]  # change to fit the structure of your DataFrame
     vital_signs = df['vital_sign'].unique()
@@ -57,6 +63,7 @@ def visualize_signs(df, diagnosis):
         fig.delaxes(ax[i])
 
     plt.tight_layout()
+    plt.savefig(f'../data_viz_img/vital_signs/Diagnosis_{get_index(diagnosis)}_{diagnosis}.png')
     plt.subplots_adjust(top=0.95)
     plt.show()
 
