@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from config import *
+
 lab_categories = {
     'Kidney Function': ['bun', 'creatinine'],
     'Liver Function': ['bilirubin', 'albumin'],
@@ -59,5 +61,5 @@ def visualize_category(df, category):
             fig.delaxes(axes[j])
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-    plt.savefig(f'../data_viz_img/lab_results/{category_index(category)}_{category}.png')
+    plt.savefig(os.path.join(FIG_LAB_RESULTS_DIR, f'{category_index(category)}_{category}.png'))
     plt.show()
