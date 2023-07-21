@@ -1,8 +1,7 @@
-import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import seaborn as sns
-from preprocessing import process_diagnoses
+from src.data import process_diagnoses
+from config import *
 
 
 def replace_vital_labels(df):
@@ -63,7 +62,7 @@ def visualize_signs(df, diagnosis):
         fig.delaxes(ax[i])
 
     plt.tight_layout()
-    plt.savefig(f'../data_viz_img/vital_signs/Diagnosis_{get_index(diagnosis)}_{diagnosis}.png')
+    plt.savefig(os.path.join(FIG_VITAL_SIGNS_DIR, f'Diagnosis_{get_index(diagnosis)}_{diagnosis}.png'))
     plt.subplots_adjust(top=0.95)
     plt.show()
 
