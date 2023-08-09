@@ -19,7 +19,7 @@ FIG_LAB_RESULTS_DIR = os.path.join(FIG_DIR, 'lab_results/')
 
 PROCESSING_DIR = os.path.join(BASE_DIR, 'src/data/')
 
-SCRIPTS_DIR = os.path.join(BASE_DIR, 'utils/sql_scripts/')
+SCRIPTS_DIR = os.path.join(BASE_DIR, 'SQL_Queries')
 SCRIPTS_VITAL_SIGNS_DIR = os.path.join(SCRIPTS_DIR, 'vital_signs/')
 SCRIPTS_LAB_RESULTS_DIR = os.path.join(SCRIPTS_DIR, 'lab_results/')
 

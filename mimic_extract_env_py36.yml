@@ -1,0 +1,34 @@
+name: mimic_data_extraction
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - boto3
+  - cached-property
+  - cchardet
+  - certifi
+  - click
+  - cython-blis
+  - datapackage
+  - docutils
+  - et_xmlfile
+  - ijson
+  - isodate
+  - jdcal
+  - jmespath
+  - jsonlines
+  - jsonpointer
+  - linear-tsv
+  - openpyxl
+  - python_abi=3.6
+  - rfc3986
+  - s3transfer
+  - spacy=2.1.8
+  - sqlalchemy
+  - srsly
+  - tableschema
+  - tabulator
+  - thinc
+  - unicodecsv
+  - wasabi
+  - xlrd
