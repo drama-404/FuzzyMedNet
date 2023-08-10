@@ -1,4 +1,4 @@
-name: mimic_data_extraction
+name: fuzzymednet_env
 channels:
   - conda-forge
   - defaults

@@ -1,26 +1,61 @@
-# Improving Explanation of Deep Learning Models for Medical Diagnoses through Fuzzy  Logic Interpretations
+# FuzzyMedNet: An Explainable Deep Learning Framework for Medical Diagnostics
 
-├── [**data/**](./data) (CSV Files of raw and processed data) <br>
-│   ├── [**processed/**](./data/processed) (contains all cleaned and preprocessed data)<br>
-│   └── [**raw/**](./data/raw) (contains all raw data files)<br>
+## About
 
-├── [**notebooks/**](./notebooks) (Jupyter notebooks for analysis, processing, training, and validation)<br>
-│   ├── [**patient_stay/**](./notebooks/patient_stay) (Notebooks for Patient Stay related data - `ADMISSIONS`, `PATIENTS`, `DIAGNOSES`, etc.)<br>
-│   ├── [**vital_signs/**](./notebooks/vital_signs) (Notebooks for Vital Signs related data - `CHARTEVENTS`)<br>
-│   ├── [**lab_results/**](./notebooks/lab_results) (Notebooks for Lab Results related data - `LABEVENTS`)<br>
-│   └── [**features/**](./notebooks/features) (Notebooks for applying Feature Importance to processed data)<br>
+FuzzyMedNet is a comprehensive deep learning framework tailored for medical diagnostics, leveraging the strengths of Fuzzy Logic to bridge the gap between high predictive accuracy and model explainability. This repository is organized into the following directories:
 
-├── [**reports/**](./reports) (Data Visualization Graphics and Report Documents)<br>
-│   └── [**figures/**](./reports/figures) (graphics from data visualization)<br>
+- **Data**: This directory contains the dataset post-processing using [MIMIC-Extract](https://github.com/MLforHealth/MIMIC_Extract/tree/master) pipeline.
+- **FuzzyModules**: Scripts and modules related to the integration of Fuzzy Logic.
+- **Notebooks**: Jupyter Notebooks demonstrating the usage, training, and evaluation of the models.
+- **Resources**: Contains supporting files, expected schema of output tables, and other pertinent documents.
+- **Utils**: Scripts and tools that facilitate data preprocessing, model evaluation, and other utilities.
 
-├── [**src/**](./src) (Python scripts)<br>
-│   ├── [**data/**](./src/data) (scripts to process data)<br>
-│   ├── [**features/**](./src/features) (scripts to apply feature engineering)<br>
-│   └── [**models/**](./src/models) (scripts to train models and then use trained models to make predictions)<br>
+## Contextual Background
 
-├── [**utils/**](./utils/) (utility scripts used across the project)<br>
-│   ├── [**sql_queries/**](./utils/sql_queries) (SQL Queries executed across notebooks)<br>
-│   └── [**db_connection.py**](./utils/db_connection.py) (Connect to PostGreSQL database instance for MIMIC-III dataset)<br>
+In the intersection of Artificial Intelligence (AI) and healthcare, the ability of models to make transparent decisions is of paramount importance. While Deep Learning (DL) has achieved remarkable feats in medical diagnostics, its 'black-box' nature poses challenges. FuzzyMedNet aims to address this by embedding Fuzzy Logic principles into DL models, enhancing their transparency and trustworthiness.
 
-├── [**config.py**](./config.py) (Constants used across the project)<br>
-└── [**requirements.txt**](./requirements.txt) (Instructions to replicate Python environment)<br>
+## Dataset
+
+The project employs data from the [MIMIC-III](https://physionet.org/content/mimiciii/1.4/) dataset. For data pre-processing, the [MIMIC-Extract](https://github.com/MLforHealth/MIMIC_Extract/tree/master) pipeline was utilized.
+
+## Using FuzzyMedNet
+
+To get started with FuzzyMedNet, follow the steps below:
+
+### Step 0: Prerequisites
+
+Ensure your local system meets the following prerequisites:
+
+#### Executables on the PATH:
+
+`conda`<br>
+`psql (PostgreSQL 9.4 or higher)`<br>
+`git`<br>
+
+#### Databases:
+
+MIMIC-III psql relational database. If you haven't set this up, refer to the [MIT-LCP Repo](https://github.com/MIT-LCP/mimic-code/tree/main/mimic-iii/buildmimic) for instructions.
+
+#### Data Extraction:
+
+Utilize the [/utils/Makefile](./utils/Makefile) to handle data extraction tasks.
+
+### Step 1: Set Up the Environment
+
+1. **Creating a Conda Environment**:
+   - Use the provided `fuzzymednet_env_py36.yml` file to create a new conda environment:
+     ```bash
+     conda env create --force -f fuzzymednet_env_py36.yml
+     ```
+
+2. **Activating the Conda Environment**:
+   - After creation, activate the environment using:
+     ```bash
+     conda activate fuzzymednet_env
+     ```
+
+3. **Installing Additional Packages**:
+   - Some packages might need to be installed via pip. Use the provided `requirements.txt` file to ensure all necessary packages are installed:
+     ```bash
+     pip install -r requirements.txt
+     ```

@@ -11,7 +11,7 @@ mkdir -p $MIMIC_EXTRACT_OUTPUT_DIR
 export DBUSER=postgres
 export DBNAME=mimic
 export SCHEMA=public,mimiciii
-export HOST=mimic
+export HOST=localhost
 export DBSTRING="dbname=$DBNAME options=--search_path=$SCHEMA"
 alias psql="psql -h $HOST -U $DBUSER "
 
