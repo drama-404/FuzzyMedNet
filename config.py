@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DB_CONNECTION_DIR = os.path.join(BASE_DIR, 'utils/')
 PROCESSED_DATA_DIR = os.path.join(BASE_DIR, 'data/processed/')
+DATA_FILE_PATH = os.path.join(BASE_DIR, 'data/all_hourly_data.h5')
 
 FIG_DIR = os.path.join(BASE_DIR, 'reports/figures/')
 FIG_PATIENT_STAY_DIR = os.path.join(FIG_DIR, 'patient_stay/')

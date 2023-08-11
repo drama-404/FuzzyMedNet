@@ -1,31 +1,62 @@
-import pandas as pd
+def categorize_ethnicity(ethnicity):
+    white_group = ['WHITE', 'WHITE - RUSSIAN', 'WHITE - OTHER EUROPEAN', 'WHITE - EASTERN EUROPEAN',
+                   'WHITE - BRAZILIAN', 'PORTUGUESE']
+    black_group = ['BLACK/AFRICAN AMERICAN', 'BLACK/AFRICAN', 'BLACK/CAPE VERDEAN', 'BLACK/HAITIAN']
+    asian_group = ['ASIAN', 'ASIAN - VIETNAMESE', 'ASIAN - CHINESE', 'ASIAN - ASIAN INDIAN', 'ASIAN - FILIPINO',
+                   'ASIAN - CAMBODIAN', 'ASIAN - KOREAN', 'ASIAN - JAPANESE', 'ASIAN - THAI', 'ASIAN - OTHER',
+                   'MIDDLE EASTERN']
+    hispanic_group = ['HISPANIC OR LATINO', 'HISPANIC/LATINO - GUATEMALAN', 'HISPANIC/LATINO - PUERTO RICAN',
+                      'HISPANIC/LATINO - SALVADORAN', 'HISPANIC/LATINO - DOMINICAN',
+                      'HISPANIC/LATINO - CENTRAL AMERICAN (OTHER)', 'HISPANIC/LATINO - COLOMBIAN',
+                      'HISPANIC/LATINO - HONDURAN', 'HISPANIC/LATINO - CUBAN', 'HISPANIC/LATINO - MEXICAN']
+    native_group = ['AMERICAN INDIAN/ALASKA NATIVE', 'AMERICAN INDIAN/ALASKA NATIVE FEDERALLY RECOGNIZED TRIBE']
+    islander_group = ['NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER', 'CARIBBEAN ISLAND', 'SOUTH AMERICAN']
+    unknown_group = ['UNKNOWN/NOT SPECIFIED', 'PATIENT DECLINED TO ANSWER', 'UNABLE TO OBTAIN', 'OTHER']
+
+    if ethnicity in white_group:
+        return 'WHITE'
+    elif ethnicity in black_group:
+        return 'BLACK'
+    elif ethnicity in asian_group:
+        return 'ASIAN'
+    elif ethnicity in hispanic_group:
+        return 'HISPANIC'
+    elif ethnicity in native_group:
+        return 'NATIVE AMERICAN'
+    elif ethnicity in islander_group:
+        return 'ISLANDER'
+    else:
+        return 'OTHER/UNKNOWN'
 
 
-def add_first_admission(patients, admissions):
-    # Find the first admission time for each patient
-    first_admission_time = admissions.groupby('subject_id')['admittime'].min().reset_index()
-
-    # Rename the column
-    first_admission_time.rename(columns={'admittime': 'first_admittime'}, inplace=True)
-    first_admission_time['first_admittime'] = first_admission_time['first_admittime'].dt.floor('D')
-
-    # Merge this back into the patients DataFrame
-    patients = pd.merge(patients, first_admission_time, on='subject_id', how='left')
-
-    return patients
+def group_admission_location(location):
+    # Grouping all types of TRANSFER categories into one
+    if 'TRANSFER' in location or 'TRSF' in location:
+        return 'TRANSFER'
+    else:
+        return location
 
 
-def calc_age_at_admission(df):
-    # Calculate the age at the time of admission
-    df['age_at_admission'] = df['first_admittime'].dt.year - df['dob'].dt.year
+def group_admission_type(adm_type):
+    # Grouping the URGENT & EMERGENCY type into a single category
+    return 'EMERGENCY' if adm_type == 'URGENT' else adm_type
 
-    # For those older than 89 at their first admission, set their age to be 89
-    df['age_at_admission'] = df['age_at_admission'].apply(lambda age: 89 if age > 89 else age)
+
+def calc_age(df):
+    df['age_at_admission'] = df['admittime'].dt.year - df['dob'].dt.year
+    df['age_at_admission'] = df['age_at_admission'].apply(lambda x: 89 if x > 89 else x)
 
     return df
 
 
-def clean_df(df):
-    # Drop irrelevant columns
-    columns_to_drop = ['row_id', 'dod', 'dod_hosp', 'dod_ssn', 'first_admittime']
-    return df.drop(columns=columns_to_drop)
+def categorize_age(age):
+    if 10 < age <= 30:
+        cat = '<31'
+    elif 30 < age <= 50:
+        cat = '31-50'
+    elif 50 < age <= 70:
+        cat = '51-70'
+    else:
+        cat = '>70'
+    return cat
+

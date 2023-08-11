@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - seaborn
   - boto3
   - cached-property
   - cchardet
