@@ -42,11 +42,8 @@ def group_admission_type(adm_type):
     return 'EMERGENCY' if adm_type == 'URGENT' else adm_type
 
 
-def calc_age(df):
-    df['age_at_admission'] = df['admittime'].dt.year - df['dob'].dt.year
-    df['age_at_admission'] = df['age_at_admission'].apply(lambda x: 89 if x > 89 else x)
-
-    return df
+def calc_age(age):
+    return age if age < 90 else 90
 
 
 def categorize_age(age):
