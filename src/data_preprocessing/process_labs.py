@@ -44,13 +44,13 @@ def visualize_category(df, category):
 
     for i, lab_test in enumerate(lab_tests):
         df_lab_test = df_filtered[df_filtered['label'] == lab_test]
-        # data = [df_lab_test['min_value'], df_lab_test['max_value']]
+        # data_preprocessing = [df_lab_test['min_value'], df_lab_test['max_value']]
 
         df_melted = df_lab_test.melt(id_vars=['subject_id', 'hadm_id', 'icustay_id', 'label', 'hospital_expire_flag'],
                                      value_vars=['min_value', 'max_value'],
                                      var_name='type', value_name='value')
 
-        # axes[i].boxplot(data, labels=['Min', 'Max'])
+        # axes[i].boxplot(data_preprocessing, labels=['Min', 'Max'])
         # axes[i].set_title(f'{lab_test} Values')
 
         sns.boxplot(data=df_melted, x='type', y='value', hue='hospital_expire_flag', ax=axes[i])

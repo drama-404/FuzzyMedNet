@@ -11,7 +11,7 @@ def load_datapackage_schema(json_fpath, resource_id=0):
     schema : schema object, with attributes
         field_names
         fields : list of dict
-            Each dict provides info about the field (data type, etc)
+            Each dict provides info about the field (data_preprocessing type, etc)
     """
     spec = datapackage.DataPackage(json_fpath)
     schema = spec.resources[resource_id].schema

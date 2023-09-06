@@ -15,7 +15,7 @@ SET SEARCH_PATH TO public,mimiciii;
 -- The ventilation events are numbered consecutively by the `num` column.
 
 
--- First, create a temporary table to store relevant data from CHARTEVENTS.
+-- First, create a temporary table to store relevant data_preprocessing from CHARTEVENTS.
 DROP  MATERIALIZED VIEW IF EXISTS nivdurations CASCADE;
 create  MATERIALIZED VIEW nivdurations as
 with nivsettings AS

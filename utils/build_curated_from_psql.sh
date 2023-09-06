@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Build curated dataset of .csv / .npy / .hd5 files
-# for patient time-series data extracted from PSQL DB
+# for patient time-series data_preprocessing extracted from PSQL DB
 #
 # Takes optional argument POP_SIZE
 #
@@ -9,11 +9,11 @@
 mkdir -p $MIMIC_EXTRACT_OUTPUT_DIR;
 
 if [[ -z $POP_SIZE ]]; then
-    # means extract all available data
+    # means extract all available data_preprocessing
     POP_SIZE=0;
 fi
 
-python -u $MIMIC_EXTRACT_CODE_DIR/src/mimic_direct_extract.py \
+python -u $MIMIC_EXTRACT_CODE_DIR/src/mimic_extract/mimic_direct_extract.py \
     --out_path $MIMIC_EXTRACT_OUTPUT_DIR/ \
     --resource_path $MIMIC_EXTRACT_CODE_DIR/resources/ \
     --extract_pop 2 \

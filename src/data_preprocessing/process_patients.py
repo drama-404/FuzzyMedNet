@@ -57,3 +57,12 @@ def categorize_age(age):
         cat = '>70'
     return cat
 
+
+def clean_df(df):
+    columns_to_keep = ['gender', 'ethnicity', 'age', 'admittime',
+                       'diagnosis_at_admission', 'dischtime', 'discharge_location',
+                       'fullcode_first', 'dnr_first', 'dnr_first_charttime',
+                       'cmo_first', 'deathtime', 'intime', 'outtime',
+                       'los_icu', 'admission_type', 'first_careunit', 'mort_icu', 'mort_hosp',
+                       'readmission_30', 'max_hours', 'age_bucket']
+    return df[columns_to_keep]

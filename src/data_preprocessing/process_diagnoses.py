@@ -68,7 +68,7 @@ def tfidf_diagnoses(df, column='short_title'):
     # Fit and transform the 'short_title' column
     tfidf_matrix = vectorizer.fit_transform(df[column])
 
-    # The result is a sparse matrix where each row corresponds to a document (a row in your data)
+    # The result is a sparse matrix where each row corresponds to a document (a row in your data_preprocessing)
     # and each column corresponds to a word. The value in each cell is the TF-IDF score of that
     # word in that document.
     return tfidf_matrix

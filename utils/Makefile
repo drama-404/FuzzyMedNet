@@ -38,7 +38,7 @@ build_concepts_mimic_code: setup_user_env.sh clone_mimic_code_repo
 	source ./setup_user_env.sh; \
 	cd ${MIMIC_CODE_DIR}/concepts; \
 	psql -U ${DBUSER} "${DBSTRING}" -h ${HOST} -f ./make-concepts.sql; \
-	cd ../../MIMIC_Extract/utils; \
+	cd ../../FuzzyMedNet/utils; \
 	}
 
 .PHONY: build_extra_concepts

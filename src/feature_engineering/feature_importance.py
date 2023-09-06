@@ -15,10 +15,10 @@ def get_feature_importance(df, classifier):
     # mortality is the target variable
     target = 'hospital_expire_flag'
 
-    # Let's separate the features and target variable
+    # Let's separate the feature_engineering and target variable
     X = df.drop(columns=[target])
     y = df[target]
-    # Split the data into train and test datasets
+    # Split the data_preprocessing into train and test datasets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
     # Create the model

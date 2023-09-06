@@ -88,7 +88,7 @@ class GRUD(nn.Module):
             input_size: variable dimension of each time
             hidden_size: dimension of hidden_state
             mask_size: dimension of masking vector
-            X_mean: the mean of the historical input data
+            X_mean: the mean of the historical input data_preprocessing
         """
         
         super(GRUD, self).__init__()
@@ -164,7 +164,7 @@ class GRUD(nn.Module):
         batch_size = X.size(0)
 #         type_size = input.size(1)
         step_size = X.size(1) # num timepoints
-        spatial_size = X.size(2) # num features
+        spatial_size = X.size(2) # num feature_engineering
         
         Hidden_State = self.initHidden(batch_size)
 #         X = torch.squeeze(input[:,0,:,:])
