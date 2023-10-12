@@ -1,0 +1,47 @@
+,MEASUREMENT,VALID LOW,IMPUTE,VALID HIGH
+0,alanine aminotransferase,2.0,34.0,10000.0
+1,albumin,0.6,3.1,6.0
+2,alkaline phosphate,20.0,106.0,3625.0
+3,anion gap,5.0,13.0,50.0
+4,asparate aminotransferase,6.0,40.0,20000.0
+5,bicarbonate,0.0,25.0,60.0
+6,blood urea nitrogen,0.0,23.0,250.0
+7,capillary refill rate,0.0,0.0,1.0
+8,chloride,50.0,104.0,175.0
+9,cholesterol,32.0,160.0,600.0
+10,creatinine,0.1,1.0,60.0
+11,diastolic blood pressure,0.0,59.0,375.0
+12,fraction inspired oxygen,0.21,0.21,1.0
+13,glascow coma scale eye opening,1.0,4.0,4.0
+14,glascow coma scale motor response,1.0,6.0,6.0
+15,glascow coma scale total,3.0,11.0,15.0
+16,glascow coma scale verbal response,1.0,4.0,5.0
+17,glucose,33.0,128.0,2000.0
+18,heart rate,0.0,86.0,350.0
+19,height,0.0,170.0,240.0
+20,hematocrit,0.0,30.2,75.0
+21,hemoglobin,0.0,10.2,25.0
+22,lactate,0.4,1.8,30.0
+23,lactate dehydrogenase,54.0,263.0,33000.0
+24,magnesium,0.0,2.0,20.0
+25,mean blood pressure,14.0,77.0,330.0
+26,oxygen saturation,0.0,98.0,100.0
+27,partial pressure of carbon dioxide,0.0,40.0,200.0
+28,partial pressure of oxygen,32.0,112.0,700.0
+29,partial thromboplastin time,18.8,34.4,150.0
+30,peak inspiratory pressure,14.0,20.0,38.0
+31,ph,6.3,7.4,8.4
+32,phosphate,0.5,3.4,20.0
+33,platelets,0.0,208.0,2000.0
+34,positive end-expiratory pressure,0.0,6.0,25.0
+35,potassium,0.0,4.1,12.0
+36,prothrombin time,9.9,14.5,97.1
+37,respiratory rate,0.0,19.0,300.0
+38,sodium,50.0,142.0,225.0
+39,systolic blood pressure,0.0,118.0,375.0
+40,temperature,26.0,37.0,45.0
+41,troponin-i,0.01,2.3,49.6
+42,troponin-t,0.01,0.1,20.85
+43,urine output,0.0,80.0,1200.0
+44,weight,0.0,81.8,250.0
+45,white blood cell count,0.0,9.9,1000.0
