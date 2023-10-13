@@ -22,3 +22,9 @@ PROCESSING_DIR = os.path.join(BASE_DIR, 'src/data_preprocessing/')
 SCRIPTS_DIR = os.path.join(BASE_DIR, 'sql_queries')
 SCRIPTS_VITAL_SIGNS_DIR = os.path.join(SCRIPTS_DIR, 'vital_signs/')
 SCRIPTS_LAB_RESULTS_DIR = os.path.join(SCRIPTS_DIR, 'lab_results/')
+
+GAP_TIME = 6  # In hours
+WINDOW_SIZE = 24 # In hours
+ID_COLS = ['subject_id', 'hadm_id', 'icustay_id']
+TRAIN_FRAC, DEV_FRAC, TEST_FRAC = 0.7, 0.1, 0.2
+SEED = 1

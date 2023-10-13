@@ -1,7 +1,7 @@
 """
 simple_impute.py
 
-- Function that handles missing data. Here's how:
+- Function that handles missing data.
     - Missing values are forward-filled (propagated last valid observation forward).
     - If any missing values remain, they are filled with the mean for that `icustay_id` group.
     - Any remaining missing values are filled with 0.

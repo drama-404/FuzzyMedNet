@@ -76,9 +76,9 @@ def plot_hourly_distributions(df, features, valid_ranges):
         sns.lineplot(data=hourly_mean, x='hours_in', y=feature)
 
         # Fetch valid low and high values for the measurement
-        if feature in list(valid_ranges['LEVEL2']):
-            valid_low = valid_ranges.loc[valid_ranges['LEVEL2'] == feature, 'VALID LOW'].values[0]
-            valid_high = valid_ranges.loc[valid_ranges['LEVEL2'] == feature, 'VALID HIGH'].values[0]
+        if feature in list(valid_ranges['measurement']):
+            valid_low = valid_ranges.loc[valid_ranges['measurement'] == feature, 'valid low'].values[0]
+            valid_high = valid_ranges.loc[valid_ranges['measurement'] == feature, 'valid high'].values[0]
 
             # Add lines for valid low and high values
             plt.axhline(valid_low, color='r', linestyle='--', label=f'Valid Low ({valid_low})')
@@ -92,4 +92,50 @@ def plot_hourly_distributions(df, features, valid_ranges):
         plt.show()
 
 
+def plot_hourly_distributions(df, features, valid_ranges):
+    """
+    Plot the hourly distributions of measurements, considering the mean of all patients.
 
+    Parameters:
+    - df: DataFrame containing the measurements and hours.
+          The DataFrame is assumed to have columns 'hours_in' and feature columns.
+    - features: list of measurements to plot.
+    - valid_ranges: DataFrame containing 'Measurement', 'Valid Low', and 'Valid High' columns.
+    """
+    # # Identify the unique measurements (features) in the DataFrame
+    # features = [col for col in df.columns if col != 'hours_in']
+
+    for feature in features:
+        plt.figure(figsize=(10, 5))
+
+        # Group by 'hours_in' and calculate mean for each hour for the feature
+        hourly_mean = df.groupby(['hours_in'])[feature].mean().reset_index()
+
+        sns.lineplot(data=hourly_mean, x='hours_in', y=feature)
+
+        # Fetch valid low and high values for the measurement
+        if feature in list(valid_ranges['measurement']):
+            valid_low = valid_ranges.loc[valid_ranges['measurement'] == feature, 'valid low'].values[0]
+            valid_high = valid_ranges.loc[valid_ranges['measurement'] == feature, 'valid high'].values[0]
+
+            # Add lines for valid low and high values
+            plt.axhline(valid_low, color='r', linestyle='--', label=f'Valid Low ({valid_low})')
+            plt.axhline(valid_high, color='g', linestyle='--', label=f'Valid High ({valid_high})')
+
+        plt.title(f'Hourly Distribution of {feature}')
+        plt.xlabel('Hours in ICU')
+        plt.ylabel(f'{feature} (Mean)')
+        # plt.legend()
+
+        plt.show()
+
+
+def plot_hourly_counts(df, features):
+    for feature in features:
+        if feature in df.columns:
+            plt.figure(figsize=(18, 5))
+            df[feature].plot(kind='bar')
+            plt.title(f'Total Hourly Measurements of {feature}')
+            plt.xlabel('Hours in ICU')
+            plt.ylabel(f'{feature} (Sum)')
+            plt.show()
