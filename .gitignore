@@ -112,3 +112,5 @@ tags
 
 # user-specific configurations
 .idea/
+
+*.pkl

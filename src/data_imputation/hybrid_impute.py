@@ -23,14 +23,18 @@ LOAD_TIME_IMPUTED = False
 LOAD_FILLED = False
 LOAD_MULTIPLE_IMPUTED = False
 
+
 def time_series_imputer(df):
     # Forward fill to propagate the last valid observation forward
-    df_ffill = df.groupby(ID_COLS).fillna(method='ffill')
+    idx = pd.IndexSlice
+    df.loc[:, idx[:, 'mean']] = df.loc[:, idx[:, 'mean']].groupby(ID_COLS).fillna(
+        method='ffill'
+    )
 
     # Use linear interpolation for any remaining missing values
-    df_interpolated = df_ffill.groupby(ID_COLS).apply(lambda group: group.interpolate())
+    df.loc[:, idx[:, 'mean']] = df.loc[:, idx[:, 'mean']].groupby(ID_COLS).apply(lambda group: group.interpolate())
 
-    return df_interpolated
+    return df
 
 
 def multiple_imputer(df):
@@ -40,35 +44,55 @@ def multiple_imputer(df):
     return df_imputed
 
 
-def hybrid_imputer(df, train_subj):
+def hybrid_imputer(df, global_means, icustay_means):
     # Initialize filenames
     time_imputed_filename = 'time_imputed.pkl'
     filled_filename = 'filled.pkl'
     multiple_imputed_filename = 'multiple_imputed.pkl'
 
+    idx = pd.IndexSlice         # helper object for slicing on multi-index levels
+    df = df.copy()              # ensure that changes within the function do not affect the original data
+    df = df.loc[:, idx[:, ['mean', 'count']]]
+
     print(f"Initial shape: {df.shape}")
     if LOAD_TIME_IMPUTED and os.path.exists(time_imputed_filename):
-        df_time_imputed = load_from_pickle(time_imputed_filename)
+        df = load_from_pickle(time_imputed_filename)
     else:
-        df_time_imputed = time_series_imputer(df)
-        save_to_pickle(df_time_imputed, time_imputed_filename)
-    print(f"Shape after time-series imputation: {df_time_imputed.shape}")
+        df = time_series_imputer(df)
+        save_to_pickle(df, time_imputed_filename)
+    print(f"Shape after time-series imputation: {df.shape}")
 
     if LOAD_FILLED and os.path.exists(filled_filename):
-        df_filled = load_from_pickle(filled_filename)
+        df = load_from_pickle(filled_filename)
     else:
-        train_mean = df_time_imputed.loc[train_subj].mean()
-        df_filled = df_time_imputed.fillna(train_mean)
-        save_to_pickle(df_filled, filled_filename)
-    print(f"Shape after filling with mean: {df_filled.shape}")
+        df.loc[:, idx[:, 'mean']] = df.loc[:, idx[:, 'mean']].groupby(ID_COLS).fillna(icustay_means).fillna(global_means)
+        save_to_pickle(df, filled_filename)
+    print(f"Shape after filling with mean: {df.shape}")
 
-    if LOAD_MULTIPLE_IMPUTED and os.path.exists(multiple_imputed_filename):
-        df_multiple_imputed = load_from_pickle(multiple_imputed_filename)
-    else:
-        df_multiple_imputed = multiple_imputer(df_filled)
-        save_to_pickle(df_multiple_imputed, multiple_imputed_filename)
-    print(f"Shape after multiple imputation: {df_multiple_imputed.shape}")
+    # if LOAD_MULTIPLE_IMPUTED and os.path.exists(multiple_imputed_filename):
+    #     df_multiple_imputed = load_from_pickle(multiple_imputed_filename)
+    # else:
+    #     df_multiple_imputed = multiple_imputer(df_filled)
+    #     save_to_pickle(df_multiple_imputed, multiple_imputed_filename)
+    # print(f"Shape after multiple imputation: {df_multiple_imputed.shape}")
 
-    return df_multiple_imputed
+    # Create a mask to indicate the presence of data
+    df.loc[:, idx[:, 'count']] = (df.loc[:, idx[:, 'count']] > 0).astype(float)
+    df.rename(columns={'count': 'mask'}, level='Aggregation Function', inplace=True)
+
+    # Compute time since last measurement
+    is_absent = (1 - df.loc[:, idx[:, 'mask']])
+    hours_of_absence = is_absent.cumsum()
+    time_since_measured = hours_of_absence - hours_of_absence[is_absent == 0].fillna(method='ffill')
+    time_since_measured.rename(columns={'mask': 'time_since_measured'}, level='Aggregation Function', inplace=True)
+
+    # Concatenate and final adjustments
+    df = pd.concat((df, time_since_measured), axis=1)
+    df.loc[:, idx[:, 'time_since_measured']] = df.loc[:, idx[:, 'time_since_measured']].fillna(100)
+
+    df.sort_index(axis=1, inplace=True)
+
+    return df
+
 
 
