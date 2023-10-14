@@ -3,33 +3,52 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - seaborn
-  - boto3
-  - cached-property
-  - cchardet
-  - certifi
-  - click
-  - cython-blis
-  - datapackage
-  - docutils
-  - et_xmlfile
-  - ijson
-  - isodate
-  - jdcal
-  - jmespath
-  - jsonlines
-  - jsonpointer
-  - linear-tsv
-  - openpyxl
-  - python_abi=3.6
-  - rfc3986
-  - s3transfer
-  - spacy=2.1.8
-  - sqlalchemy
-  - srsly
-  - tableschema
-  - tabulator
-  - thinc
-  - unicodecsv
-  - wasabi
-  - xlrd
+  # Data Visualization
+  - matplotlib  # Data visualization library
+  - seaborn  # Data visualization library based on matplotlib
+
+  # Machine Learning and Data Science Libraries
+  - numpy  # Fundamental package for scientific computing with Python
+  - pandas  # Data manipulation and analysis library
+  - scipy>=1.5.4  # Scientific computing and data analysis library
+  - scikit-learn  # Machine learning library with simple and efficient tools
+  - psycopg2>=2.8.6  # PostgreSQL adapter for Python
+  - xgboost>=1.3.3  # Gradient boosting library for machine learning
+  - ipython>=7.16.1  # Enhanced interactive Python shell for data exploration
+
+#  # Natural Language Processing (NLP) with spaCy
+#  - spacy=2.1.8  # spaCy library for NLP and text processing (version 2.1.8)
+#  - sqlalchemy  # SQL toolkit and Object-Relational Mapping (ORM) library
+#  - srsly  # Serialization utilities
+#  - tableschema  # Data tables schemas for validation and conversion
+#  - tabulator  # Tabular data reading and writing
+#  - thinc  # Machine learning library for spaCy
+#  - unicodecsv  # Unicode-compatible CSV library
+#  - wasabi  # Colorful console logging for Python
+#  - xlrd  # Library for reading data and formatting information from Excel files
+#
+#  # AWS SDK for Python
+#  - boto3  # Amazon Web Services (AWS) SDK for Python
+#
+#  # Miscellaneous Python libraries
+#  - cached-property  # Caching decorator for methods
+#  - cchardet  # Character encoding detector
+#  - certifi  # Certificates bundle
+#  - click  # Command-line interface creation kit
+#  - cython-blis  # Cython wrapper for BLIS linear algebra library
+#  - datapackage  # Data package management and validation
+#  - docutils  # Documentation utilities
+#  - et_xmlfile  # Library for parsing Excel XML files
+#  - ijson  # Iterative JSON parser
+#  - isodate  # ISO 8601 date/time parser and formatter
+#  - jdcal  # Julian dates calculations
+#  - jmespath  # JSON Query language for Python
+#  - jsonlines  # Handling JSON data with one JSON object per line
+#  - jsonpointer  # JSON Pointer (RFC 6901) implementation
+#  - linear-tsv  # Tab-separated value (TSV) parsing and writing
+#  - openpyxl  # Library for reading and writing Excel files
+#  - python_abi=3.6  # Python ABI version 3.6
+#
+#  # URL handling
+#  - rfc3986  # Parsing and validating URI references
+#  - s3transfer  # AWS S3 file transfer manager

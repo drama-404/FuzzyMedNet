@@ -14,16 +14,13 @@ import copy, math, os, pickle, time, pandas as pd, numpy as np
 ID_COLS = ['subject_id', 'hadm_id', 'icustay_id']
 
 
-def simple_imputer(df, train_subj):
+def simple_imputer(df, global_means, icustay_means):
     """Impute missing values in the data"""
     idx = pd.IndexSlice         # helper object for slicing on multi-index levels
     df = df.copy()              # ensure that changes within the function do not affect the original data
 
     # Select mean and count columns
     df_out = df.loc[:, idx[:, ['mean', 'count']]]
-    # Compute mean for each icustay
-    icustay_means = df_out.loc[:, idx[:, 'mean']].groupby(ID_COLS).mean()
-    global_means = df_out.loc[idx[train_subj, :], idx[:, 'mean']].mean(axis=0)
 
     # This is a multistep imputation:
     # First, fill NaN values with the preceding value in the group using `forward fill`.
@@ -49,3 +46,12 @@ def simple_imputer(df, train_subj):
 
     df_out.sort_index(axis=1, inplace=True)
     return df_out
+
+
+def calculate_impute_values(train_df):
+    idx = pd.IndexSlice
+    # Compute mean for each icustay
+    icustay_means = train_df.loc[:, idx[:, 'mean']].groupby(ID_COLS).mean()
+    global_means = train_df.loc[:, idx[:, 'mean']].mean(axis=0)
+
+    return global_means, icustay_means
