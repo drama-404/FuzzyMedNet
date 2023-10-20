@@ -190,7 +190,8 @@ def pearson_highly_correlated_pairs(df, threshold=.7):
 
 
 def pearson_target_correlation(df, Ys):
-    X_y = pd.merge(df, Ys['mort_hosp'], left_index=True, right_index=True, how='left')
+
+    X_y = pd.merge(df, Ys[['mort_hosp']], left_index=True, right_index=True, how='left')
     corr_matrix = X_y.corr()
 
     fig, ax = plt.subplots(figsize=(5, 8))
