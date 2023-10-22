@@ -17,12 +17,14 @@ Steps:
 
 import numpy as np
 from config import *
+from sklearn.model_selection import train_test_split
 
 GAP_TIME = 6  # Time gap in hours
 WINDOW_SIZE = 24  # Observation window in hours
 ID_COLS = ['subject_id', 'hadm_id', 'icustay_id']  # Identifying columns
 TRAIN_FRAC, DEV_FRAC, TEST_FRAC = 0.7, 0.1, 0.2  # Data split fractions
 SEED = 1  # Seed for reproducibility
+RANDOM = 0
 
 
 def train_test_dev_split(patients, vitals_labs, interventions):
@@ -49,11 +51,20 @@ def train_test_dev_split(patients, vitals_labs, interventions):
     assert lvl2_subjects == set(Ys_subj_idx), "Subject ID pools differ!"
     assert lvl2_subjects == set(interv_subj_idx), "Subject ID pools differ!"
 
-    # Randomly shuffle the subject IDs and split them into train, dev, and test sets
-    np.random.seed(SEED)
-    subjects, N = np.random.permutation(list(lvl2_subjects)), len(lvl2_subjects)
-    N_train, N_dev, N_test = int(TRAIN_FRAC * N), int(DEV_FRAC * N), int(TEST_FRAC * N)
-    train_subj, dev_subj, test_subj = subjects[:N_train], subjects[N_train:N_train + N_dev], subjects[N_train + N_dev:]
+    # # Randomly shuffle the subject IDs and split them into train, dev, and test sets
+    # np.random.seed(SEED)
+    # subjects, N = np.random.permutation(list(lvl2_subjects)), len(lvl2_subjects)
+    # N_train, N_dev, N_test = int(TRAIN_FRAC * N), int(DEV_FRAC * N), int(TEST_FRAC * N)
+    # train_subj, dev_subj, test_subj = subjects[:N_train], subjects[N_train:N_train + N_dev], subjects[N_train + N_dev:]
+
+    full_set = patients.loc[Ys_subj_idx]
+    train_set, test_set = train_test_split(full_set.reset_index(), test_size=0.2,
+                                           random_state=RANDOM, stratify=full_set['mort_hosp'])
+    split_train_set, dev_set = train_test_split(train_set, test_size=0.125,
+                                                random_state=RANDOM, stratify=train_set['mort_hosp'])
+    train_subj = split_train_set['subject_id']
+    dev_subj = dev_set['subject_id']
+    test_subj = test_set['subject_id']
 
     # Create train, dev, and test sets for each dataframe based on the shuffled subject IDs
     datasets = {

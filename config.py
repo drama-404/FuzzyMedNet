@@ -9,6 +9,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DB_CONNECTION_DIR = os.path.join(BASE_DIR, 'utils/')
 DATA_DIR = os.path.join(BASE_DIR, 'data/processed/')
+LOG_DATA_DIR = os.path.join(BASE_DIR, 'data/logs/')
 DATA_FILE_PATH = os.path.join(BASE_DIR, 'data/all_hourly_data.h5')
 PROCESSED_DATA_FILE_PATH = os.path.join(BASE_DIR, 'data/processed_data.h5')
 

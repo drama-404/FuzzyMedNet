@@ -189,12 +189,11 @@ def pearson_highly_correlated_pairs(df, threshold=.7):
     return corr_df
 
 
-def pearson_target_correlation(df, Ys):
-
+def pearson_target_correlation(df, Ys, fig_size=(5, 8)):
     X_y = pd.merge(df, Ys[['mort_hosp']], left_index=True, right_index=True, how='left')
     corr_matrix = X_y.corr()
 
-    fig, ax = plt.subplots(figsize=(5, 8))
+    fig, ax = plt.subplots(figsize=fig_size)
     # Isolate the column corresponding to `in-hospital mortality`
     corr_target = corr_matrix[['mort_hosp']].drop(labels=['mort_hosp'])
 
@@ -204,7 +203,6 @@ def pearson_target_correlation(df, Ys):
 
 
 def encoding_categorical_vars(df, categorical_cols):
-
     # Initialize OneHotEncoder
     onehotencoder = OneHotEncoder(drop='first')  # drop='first' to avoid dummy variable trap
 
@@ -225,4 +223,72 @@ def encoding_categorical_vars(df, categorical_cols):
                               columns=list(feature_names) + [col for col in df.columns if col not in categorical_cols])
 
     return df_encoded
+
+
+def minmax_scaling(X, train_min, train_max):
+    return (X - train_min) / (train_max - train_min)
+
+
+# def standardize_time_since_measured(X, train_mean, train_std):
+#     X = np.where(X == 100, 0, X)
+#     return (X - train_mean) / train_std
+
+def standardize_time_since_measured(X, train_mean, train_std):
+    X = X.where(X != 100, 0)
+    aligned_train_mean = train_mean.reindex(X.columns, level=1)
+    aligned_train_std = train_std.reindex(X.columns, level=1)
+    return (X - aligned_train_mean) / aligned_train_std
+
+
+def rename_dropped_level_columns(df):
+    new_columns = [f"{col[0]}_{col[1]}" for col in df.columns]
+    df.columns = new_columns
+
+
+def standardize(vitals_train, vitals_dev, vitals_test):
+    idx = pd.IndexSlice
+    X_train, X_dev, X_test = vitals_train.copy(), vitals_dev.copy(), vitals_test.copy()
+
+    # Min-Max Scaling
+    train_min = X_train.loc[:, idx[:, 'mean']].min()
+    train_max = X_train.loc[:, idx[:, 'mean']].max()
+    for df in [X_train, X_dev, X_test]:
+        df.loc[:, idx[:, 'mean']] = minmax_scaling(df.loc[:, idx[:, 'mean']], train_min, train_max)
+
+    # Standardization
+    X_train.loc[:, idx[:, 'time_since_measured']] = np.where(X_train.loc[:, idx[:, 'time_since_measured']] == 100, 0,
+                                                             X_train.loc[:, idx[:, 'time_since_measured']])
+    train_mean = X_train.loc[:, idx[:, 'time_since_measured']].mean()
+    train_std = X_train.loc[:, idx[:, 'time_since_measured']].std()
+    for df in [X_train, X_dev, X_test]:
+        df.loc[:, idx[:, 'time_since_measured']] = standardize_time_since_measured(
+            df.loc[:, idx[:, 'time_since_measured']], train_mean, train_std)
+
+    # Before dropping the last level, rename the columns
+    rename_dropped_level_columns(X_train)
+    rename_dropped_level_columns(X_dev)
+    rename_dropped_level_columns(X_test)
+
+    # # Now drop the last level
+    # X_train.columns = X_train.columns.droplevel(-1)
+    # X_dev.columns = X_dev.columns.droplevel(-1)
+    # X_test.columns = X_test.columns.droplevel(-1)
+
+    return X_train, X_dev, X_test
+
+
+def create_feature_matrix(patients, vitals, interventions):
+    # merge time series and static data
+    X_merge = pd.merge(vitals.reset_index(), patients.reset_index(), on=['subject_id','icustay_id','hadm_id'])
+    # add absolute time feature
+    abs_time = (X_merge['intime'] + X_merge['hours_in'])%24
+    X_merge.insert(4, 'absolute_time', abs_time)
+    X_merge.drop('intime', axis=1, inplace=True)
+    X_merge.set_index(['subject_id','icustay_id','hadm_id','hours_in'], inplace=True)
+
+    # merge the interventions as well
+    X_final = pd.merge(X_merge.reset_index(), interventions.reset_index(),
+                       on=['subject_id', 'icustay_id', 'hadm_id', 'hours_in'])
+    X_final.set_index(['subject_id', 'icustay_id', 'hadm_id', 'hours_in'], inplace=True)
+    return X_final
 
