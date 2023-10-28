@@ -8,9 +8,12 @@ import torch, torch.utils.data as utils, torch.nn as nn, torch.nn.functional as 
 from torch.autograd import Variable
 from torch.nn.parameter import Parameter
 
+
 def to_3D_tensor(df):
     idx = pd.IndexSlice
     return np.dstack((df.loc[idx[:,:,:,i], :].values for i in sorted(set(df.index.get_level_values('hours_in')))))
+
+
 def prepare_dataloader(df, Ys, batch_size, shuffle=True):
     """
     dfs = (df_train, df_dev, df_test).
@@ -21,7 +24,8 @@ def prepare_dataloader(df, Ys, batch_size, shuffle=True):
     label = torch.from_numpy(Ys.values.astype(np.int64))
     dataset = utils.TensorDataset(X, label)
     
-    return utils.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last = True)
+    return utils.DataLoader(dataset, batch_size=int(batch_size), shuffle=shuffle, drop_last = True)
+
 
 class FilterLinear(nn.Module):
     def __init__(self, in_features, out_features, filter_square_matrix, bias=True):
@@ -62,6 +66,7 @@ class FilterLinear(nn.Module):
             + 'in_features=' + str(self.in_features) \
             + ', out_features=' + str(self.out_features) \
             + ', bias=' + str(self.bias is not None) + ')'
+
         
 class GRUD(nn.Module):
     def __init__(self, input_size, cell_size, hidden_size, X_mean, batch_size = 0, output_last = False):
@@ -395,6 +400,7 @@ def Train_Model(
 #             break
                 
     return best_model, [losses_train, losses_valid, losses_epochs_train, losses_epochs_valid]
+
 
 def predict_proba(model, dataloader):
     """

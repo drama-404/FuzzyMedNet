@@ -16,6 +16,12 @@ dependencies:
   - xgboost>=1.3.3  # Gradient boosting library for machine learning
   - ipython>=7.16.1  # Enhanced interactive Python shell for data exploration
 
+#  # Deep Learning Libraries
+#  - tensorflow  # Open-source machine learning framework for a range of tasks, including deep learning
+#  - keras  # High-level neural networks API running on top of TensorFlow
+#  - pytorch  # Open-source deep learning library for Python
+#  - torchvision  # Datasets, model architectures, and common image transformations for computer vision tasks
+
 #  # Natural Language Processing (NLP) with spaCy
 #  - spacy=2.1.8  # spaCy library for NLP and text processing (version 2.1.8)
 #  - sqlalchemy  # SQL toolkit and Object-Relational Mapping (ORM) library
