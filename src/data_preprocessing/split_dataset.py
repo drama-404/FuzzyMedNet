@@ -19,29 +19,32 @@ import numpy as np
 from config import *
 from sklearn.model_selection import train_test_split
 
-GAP_TIME = 6  # Time gap in hours
-WINDOW_SIZE = 24  # Observation window in hours
+GAP_TIME = 0  # Time gap in hours
+WINDOW_SIZE = 48  # Observation window in hours
 ID_COLS = ['subject_id', 'hadm_id', 'icustay_id']  # Identifying columns
 TRAIN_FRAC, DEV_FRAC, TEST_FRAC = 0.7, 0.1, 0.2  # Data split fractions
 SEED = 1  # Seed for reproducibility
 RANDOM = 0
 
 
-def train_test_dev_split(patients, vitals_labs, interventions):
+def train_test_dev_split(patients, vitals_labs, interventions , Ys):
     # Filter out patients with insufficient data and extract target labels
-    Ys = patients[patients['max_hours'] > WINDOW_SIZE + GAP_TIME][['mort_hosp', 'mort_icu']]
-    Ys.astype(float)  # Convert to float type
+    # Ys = patients[patients['max_hours'] > WINDOW_SIZE + GAP_TIME][['mort_hosp', 'mort_icu']]
+    # Ys = patients[['mort_hosp']]
+    # Ys.astype(float)  # Convert to float type
 
     # Extract static features
-    statics = patients.drop(columns=['mort_hosp', 'mort_icu', 'max_hours'])
+    statics = patients.drop(columns=['mort_hosp', 'max_hours'])
 
     # Filter time-series data to only include instances within the observation window
-    lvl2, interv = [
-        df[
-            (df.index.get_level_values('icustay_id').isin(set(Ys.index.get_level_values('icustay_id')))) &
-            (df.index.get_level_values('hours_in') < WINDOW_SIZE)
-        ] for df in (vitals_labs, interventions)
-    ]
+    # lvl2, interv = [
+    #     df[
+    #         (df.index.get_level_values('icustay_id').isin(set(Ys.index.get_level_values('icustay_id')))) &
+    #         (df.index.get_level_values('hours_in') < WINDOW_SIZE)
+    #     ] for df in (vitals_labs, interventions)
+    # ]
+    lvl2 = vitals_labs
+    interv = interventions
 
     # Validate that the subject IDs match across all dataframes
     lvl2_subj_idx, interv_subj_idx, Ys_subj_idx = [

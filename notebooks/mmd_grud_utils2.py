@@ -1,17 +1,16 @@
 import copy, math, os, pickle, time, pandas as pd, numpy as np, scipy.stats as ss
-from sklearn.metrics import average_precision_score, roc_auc_score, accuracy_score, f1_score
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import average_precision_score, roc_auc_score, accuracy_score, f1_score
 
 import torch, torch.utils.data as utils, torch.nn as nn, torch.nn.functional as F, torch.optim as optim
 from torch.autograd import Variable
 from torch.nn.parameter import Parameter
 
-
 def to_3D_tensor(df):
     idx = pd.IndexSlice
     return np.dstack((df.loc[idx[:,:,:,i], :].values for i in sorted(set(df.index.get_level_values('hours_in')))))
-
-
 def prepare_dataloader(df, Ys, batch_size, shuffle=True):
     """
     dfs = (df_train, df_dev, df_test).
@@ -22,8 +21,7 @@ def prepare_dataloader(df, Ys, batch_size, shuffle=True):
     label = torch.from_numpy(Ys.values.astype(np.int64))
     dataset = utils.TensorDataset(X, label)
     
-    return utils.DataLoader(dataset, batch_size=int(batch_size), shuffle=shuffle, drop_last = True)
-
+    return utils.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last = True)
 
 class FilterLinear(nn.Module):
     def __init__(self, in_features, out_features, filter_square_matrix, bias=True):
@@ -64,10 +62,9 @@ class FilterLinear(nn.Module):
             + 'in_features=' + str(self.in_features) \
             + ', out_features=' + str(self.out_features) \
             + ', bias=' + str(self.bias is not None) + ')'
-
         
 class GRUD(nn.Module):
-    def __init__(self, input_size, hidden_size, X_mean, batch_size = 0, output_last = False):
+    def __init__(self, input_size, cell_size, hidden_size, X_mean, batch_size = 0, output_last = False):
         """
         With minor modifications from https://github.com/zhiyongc/GRU-D/
 
@@ -91,7 +88,7 @@ class GRUD(nn.Module):
             input_size: variable dimension of each time
             hidden_size: dimension of hidden_state
             mask_size: dimension of masking vector
-            X_mean: the mean of the historical input data_preprocessing
+            X_mean: the mean of the historical input data
         """
         
         super(GRUD, self).__init__()
@@ -162,13 +159,12 @@ class GRUD(nn.Module):
         h = (1 - z) * h + z * h_tilde
         
         return h
-
-
+    
     def forward(self, X, X_last_obsv, Mask, Delta):
         batch_size = X.size(0)
 #         type_size = input.size(1)
         step_size = X.size(1) # num timepoints
-        spatial_size = X.size(2) # num feature_engineering
+        spatial_size = X.size(2) # num features
         
         Hidden_State = self.initHidden(batch_size)
 #         X = torch.squeeze(input[:,0,:,:])
@@ -192,12 +188,11 @@ class GRUD(nn.Module):
                 outputs = torch.cat((Hidden_State.unsqueeze(1), outputs), 1)
                 
         # we want to predict a binary outcome
-        # Apply 50% dropout and batch norm here
-        self.drop(self.bn(self.fc(Hidden_State)))             # Edit - DR
+        #Apply 50% dropout and batch norm here
+        self.drop(self.bn(self.fc(Hidden_State)))
         return self.drop(self.bn(self.fc(Hidden_State)))
-        # return self.fc(Hidden_State)
-
-    #         if self.output_last:
+                
+#         if self.output_last:
 #             return outputs[:,-1,:]
 #         else:
 #             return outputs
@@ -210,6 +205,7 @@ class GRUD(nn.Module):
         else:
             Hidden_State = Variable(torch.zeros(batch_size, self.hidden_size))
             return Hidden_State
+
         
 def Train_Model(
     model, train_dataloader, valid_dataloader, num_epochs = 300, patience = 3, min_delta = 1e-5, learning_rate=1e-3, batch_size=None
@@ -218,14 +214,14 @@ def Train_Model(
     print('Model Structure: ', model)
     print('Start Training ... ')
     
-    # model
+    model
     
     if (type(model) == nn.modules.container.Sequential):
         output_last = model[-1].output_last
-        print('Output type determined by the last layer')
+        print('Output type dermined by the last layer')
     else:
         output_last = model.output_last
-        print('Output type determined by the model')
+        print('Output type dermined by the model')
         
     loss_MSE = torch.nn.MSELoss()
     loss_nll=torch.nn.NLLLoss()
@@ -248,10 +244,6 @@ def Train_Model(
     # Variables for Early Stopping
     is_best_model = 0
     patient_epoch = 0
-
-    # for name, param in model.named_parameters():
-    #     print(f"Initial {name} - Is NaN: {torch.isnan(param.data).any()}, Is Inf: {torch.isinf(param.data).any()}")
-
     for epoch in range(num_epochs):
         
         trained_number = 0
@@ -284,12 +276,15 @@ def Train_Model(
             
             model.zero_grad()
 
-            #             outputs = model(inputs)
+#             outputs = model(inputs)
             prediction=model(X, X_last_obsv, Mask, Delta)
-
+    
+#             print(torch.sum(torch.sum(torch.isnan(prediction))))
+            
+#             print(labels.shape)
+#             print(prediction.shape)
             
             if output_last:
-
                 loss_train = loss_CEL(torch.squeeze(prediction), torch.squeeze(labels))
             else:
                 full_labels = torch.cat((inputs[:,1:,:], labels), dim = 1)
@@ -342,7 +337,9 @@ def Train_Model(
             
 #             outputs_val = model(inputs_val)
             prediction_val = model(X_val, X_last_obsv_val, Mask_val, Delta_val)
-
+    
+#             print(labels.shape)
+#             print(prediction_val.shape)
             
             if output_last:
                 loss_valid =loss_CEL(torch.squeeze(prediction_val), torch.squeeze(labels_val))
@@ -363,7 +360,8 @@ def Train_Model(
         avg_losses_epoch_valid = sum(losses_epoch_valid).cpu().numpy() / float(len(losses_epoch_valid))
         losses_epochs_train.append(avg_losses_epoch_train)
         losses_epochs_valid.append(avg_losses_epoch_valid)
-
+        
+        
         # Early Stopping
         if epoch == 0:
             is_best_model = 1
@@ -375,13 +373,14 @@ def Train_Model(
             if min_loss_epoch_valid - avg_losses_epoch_valid > min_delta:
                 is_best_model = 1
                 best_model = model
-                min_loss_epoch_valid = avg_losses_epoch_valid
+                min_loss_epoch_valid = avg_losses_epoch_valid 
                 patient_epoch = 0
             else:
                 is_best_model = 0
                 patient_epoch += 1
                 if patient_epoch >= patience:
-                    break  # Edit - DR
+                    print('Early Stopped at Epoch:', epoch)
+                    break
         
         # Print training parameters
         cur_time = time.time()
@@ -407,7 +406,7 @@ def predict_proba(model, dataloader):
         labels: size[num_samples]
     """
     model.eval()
-    use_gpu = False  # torch.cuda.is_available()
+    use_gpu = False# torch.cuda.is_available()
     
     probabilities = []
     labels        = []

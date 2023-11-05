@@ -201,6 +201,22 @@ def pearson_target_correlation(df, Ys, fig_size=(5, 8)):
     plt.title('Pearson Target Correlation')
     plt.show()
 
+def pearson_target_high_pairs(df, Ys, threshold=.2):
+    X_y = pd.merge(df, Ys[['mort_hosp']], left_index=True, right_index=True, how='left')
+    corr_matrix = X_y.corr()
+    corr_target = corr_matrix[['mort_hosp']].drop(labels=['mort_hosp'])
+
+    # Extract the values and pairs into a DataFrame
+    corr_values = []
+    for i in range(corr.shape[0]):
+        for j in range(corr.shape[1]):
+            if np.abs(corr.iloc[i, j]) >= threshold and (cols[i], cols[j]) not in pairs_to_drop:
+                corr_values.append([cols[i], cols[j], corr.iloc[i, j]])
+
+    corr_df = pd.DataFrame(corr_values, columns=['var1', 'var2', 'corr_value'])
+    return corr_df
+
+
 
 def encoding_categorical_vars(df, categorical_cols):
     # Initialize OneHotEncoder
