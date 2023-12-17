@@ -27,8 +27,8 @@ SEED = 1  # Seed for reproducibility
 RANDOM = 0
 
 
-def train_test_dev_split(patients, vitals_labs, interventions , Ys):
-    # Filter out patients with insufficient data and extract target labels
+def train_test_dev_split(patients, vitals_labs, interventions, Ys):
+    # # Filter out patients with insufficient data and extract target labels
     # Ys = patients[patients['max_hours'] > WINDOW_SIZE + GAP_TIME][['mort_hosp', 'mort_icu']]
     # Ys = patients[['mort_hosp']]
     # Ys.astype(float)  # Convert to float type
