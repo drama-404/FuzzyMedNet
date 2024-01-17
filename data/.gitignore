@@ -1,4 +1,4 @@
-# Ignore everything per data_preprocessing use and confidentiality agreements
+# Ignore everything per preprocessing use and confidentiality agreements
 *
 # Except this file
 !.gitignore

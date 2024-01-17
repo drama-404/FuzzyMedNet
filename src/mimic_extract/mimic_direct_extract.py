@@ -93,7 +93,7 @@ def continuous_outcome_processing(out_data, data, icustay_timediff):
         Contains subset of icustay_id corresp to specific sessions where outcome observed.
     data : pd.DataFrame
         index=icustay_id
-        Contains full population of static demographic data_preprocessing
+        Contains full population of static demographic preprocessing
 
     Returns
     -------
@@ -233,7 +233,7 @@ def save_numerics(
         data, X, I, var_map, var_ranges, outPath, dynamic_filename, columns_filename, subjects_filename,
         times_filename, dynamic_hd5_filename, group_by_level2, apply_var_limit, min_percent
 ):
-    assert len(data) > 0 and len(X) > 0, "Must provide some input data_preprocessing to process."
+    assert len(data) > 0 and len(X) > 0, "Must provide some input preprocessing to process."
 
     var_map = var_map[
         ['LEVEL2', 'ITEMID', 'LEVEL1']
@@ -362,7 +362,7 @@ def save_notes(notes, outPath=None, notes_h5_filename=None):
             processed_text.merge(start_idx=start, end_idx=end)
         return processed_text
 
-    nlp = spacy.load('en_core_web_sm')  # Maybe try lg model?
+    nlp = spacy.load('en_core_web_sm')  # Maybe try lg models?
     nlp.add_pipe(sbd_component, before='parser')  # insert before the parser
     disabled = nlp.disable_pipes('ner')
 
@@ -428,7 +428,7 @@ def save_outcome(
     Returns
     -------
     Y : Pandas dataframe
-        Obeys the outcomes data_preprocessing spec
+        Obeys the outcomes preprocessing spec
     """
     icuids_to_keep = get_values_by_name_from_df_column_or_index(data, 'icustay_id')
     icuids_to_keep = set([str(s) for s in icuids_to_keep])
@@ -481,7 +481,7 @@ def save_outcome(
     out_data.rename(columns={'on': 'vent'}, inplace=True)
     out_data = out_data.reset_index()
 
-    # Concatenate all the data_preprocessing vertically
+    # Concatenate all the preprocessing vertically
     Y = pd.concat([vent_data[['subject_id', 'hadm_id', 'icustay_id', 'hours_in', 'vent']],
                    out_data[['subject_id', 'hadm_id', 'icustay_id', 'hours_in', 'vent']]],
                   axis=0)
@@ -521,7 +521,7 @@ def save_outcome(
         # c may not be in Y if we are only extracting a subset of the population, in which c was never
         # performed.
         if not c in new_data:
-            print("Column ", c, " not in data_preprocessing.")
+            print("Column ", c, " not in preprocessing.")
             continue
 
         Y = Y.merge(
@@ -670,7 +670,7 @@ def apply_variable_limits(df, var_ranges, var_names_index_col='LEVEL2'):
 
 
 def plot_variable_histograms(col_names, df):
-    # Plot some of the data_preprocessing, just to make sure it looks ok
+    # Plot some of the preprocessing, just to make sure it looks ok
     for c, vals in df.iteritems():
         n = vals.dropna().count()
         if n < 2: continue
@@ -707,7 +707,7 @@ if __name__ == '__main__':
     print("Running!")
     # Construct the argument parse and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument('--out_path', type=str, default='/scratch/{}/phys_acuity_modelling/data_preprocessing'.format(os.environ['USER']),
+    ap.add_argument('--out_path', type=str, default='/scratch/{}/phys_acuity_modelling/preprocessing'.format(os.environ['USER']),
                     help='Enter the path you want the output')
     ap.add_argument('--resource_path',
                     type=str,
@@ -716,29 +716,29 @@ if __name__ == '__main__':
                     type=str,
                     default=os.path.expandvars("$MIMIC_EXTRACT_CODE_DIR/sql_queries/"))
     ap.add_argument('--extract_pop', type=int, default=1,
-                    help='Whether or not to extract population data_preprocessing: 0 - no extraction, ' +
-                         '1 - extract if not present in the data_preprocessing directory, 2 - extract even if there is data_preprocessing')
+                    help='Whether or not to extract population preprocessing: 0 - no extraction, ' +
+                         '1 - extract if not present in the preprocessing directory, 2 - extract even if there is preprocessing')
 
     ap.add_argument('--extract_numerics', type=int, default=1,
-                    help='Whether or not to extract numerics data_preprocessing: 0 - no extraction, ' +
-                         '1 - extract if not present in the data_preprocessing directory, 2 - extract even if there is data_preprocessing')
+                    help='Whether or not to extract numerics preprocessing: 0 - no extraction, ' +
+                         '1 - extract if not present in the preprocessing directory, 2 - extract even if there is preprocessing')
     ap.add_argument('--extract_outcomes', type=int, default=1,
-                    help='Whether or not to extract outcome data_preprocessing: 0 - no extraction, ' +
-                         '1 - extract if not present in the data_preprocessing directory, 2 - extract even if there is data_preprocessing')
+                    help='Whether or not to extract outcome preprocessing: 0 - no extraction, ' +
+                         '1 - extract if not present in the preprocessing directory, 2 - extract even if there is preprocessing')
     ap.add_argument('--extract_codes', type=int, default=1,
                     help='Whether or not to extract ICD9 codes: 0 - no extraction, ' +
-                         '1 - extract if not present in the data_preprocessing directory, 2 - extract even if there is data_preprocessing')
+                         '1 - extract if not present in the preprocessing directory, 2 - extract even if there is preprocessing')
     ap.add_argument('--extract_notes', type=int, default=1,
                     help='Whether or not to extract notes: 0 - no extraction, ' +
-                         '1 - extract if not present in the data_preprocessing directory, 2 - extract even if there is data_preprocessing')
+                         '1 - extract if not present in the preprocessing directory, 2 - extract even if there is preprocessing')
     ap.add_argument('--pop_size', type=int, default=0,
                     help='Size of population to extract')
     ap.add_argument('--exit_after_loading', type=int, default=0)
     ap.add_argument('--var_limits', type=int, default=1,
-                    help='Whether to create a version of the data_preprocessing with variable limits included. ' +
+                    help='Whether to create a version of the preprocessing with variable limits included. ' +
                          '1 - apply variable limits, 0 - do not apply variable limits')
     ap.add_argument('--plot_hist', type=int, default=1,
-                    help='Whether to plot the histograms of the data_preprocessing')
+                    help='Whether to plot the histograms of the preprocessing')
 
     ap.add_argument('--psql_host', type=str, default=None,
                     help='Postgres host. Try "/var/run/postgresql/" for Unix domain socket errors.')
@@ -756,7 +756,7 @@ if __name__ == '__main__':
     ap.add_argument('--min_percent', type=float, default=0.0,
                     help='Minimum percentage of row numbers need to be observations for each numeric column. ' +
                          'min_percent = 1 means columns with more than 99 percent of nan will be removed. ' +
-                         'Note that as our code does not split the data_preprocessing into train/test sets, ' +
+                         'Note that as our code does not split the preprocessing into train/test sets, ' +
                          'removing columns in this way prior to train/test splitting yields in a (very minor) ' +
                          'form of leakage across the train/test set, as the overall missingness measures are used ' +
                          'that are based on both the train and test sets, rather than just the train set.')
@@ -824,11 +824,11 @@ if __name__ == '__main__':
 
     data = None
     if (args['extract_pop'] == 0 | (args['extract_pop'] == 1)) & isfile(os.path.join(outPath, static_filename)):
-        print("Reloading data_preprocessing from %s" % os.path.join(outPath, static_filename))
+        print("Reloading preprocessing from %s" % os.path.join(outPath, static_filename))
         data = pd.read_csv(os.path.join(outPath, static_filename))
         data = sanitize_df(data, static_data_schema)
     elif (args['extract_pop'] == 1 & (not isfile(os.path.join(outPath, static_filename)))) | (args['extract_pop'] == 2):
-        print("Building data_preprocessing from scratch.")
+        print("Building preprocessing from scratch.")
         pop_size_string = ''
         if args['pop_size'] > 0:
             pop_size_string = 'LIMIT ' + str(args['pop_size'])
@@ -846,7 +846,7 @@ if __name__ == '__main__':
         data_df = querier.query(query_file=STATICS_QUERY_PATH, extra_template_vars=template_vars)
         data_df = sanitize_df(data_df, static_data_schema)
 
-        print("Storing data_preprocessing @ %s" % os.path.join(outPath, static_filename))
+        print("Storing preprocessing @ %s" % os.path.join(outPath, static_filename))
         data = save_pop(data_df, outPath, static_filename, args['pop_size'], static_data_schema)
 
     if data is None:
@@ -865,7 +865,7 @@ if __name__ == '__main__':
         X = pd.read_hdf(os.path.join(outPath, dynamic_hd5_filename))
     elif (args['extract_numerics'] == 1 & (not isfile(os.path.join(outPath, dynamic_hd5_filename)))) | (
             args['extract_numerics'] == 2):
-        print("Extracting vitals data_preprocessing...")
+        print("Extracting vitals preprocessing...")
         start_time = time.time()
 
         ########
@@ -1037,7 +1037,7 @@ if __name__ == '__main__':
     print('Variable names : ', ",".join(var_names))
     print('Output names : ', ",".join(out_names))
     if C is not None: print('Ic_dfD9 names : ', ",".join(icd_names))
-    print('Static data_preprocessing : ', ",".join(static_names))
+    print('Static preprocessing : ', ",".join(static_names))
 
     X.to_hdf(os.path.join(outPath, dynamic_hd5_filt_filename), 'vitals_labs')
     Y.to_hdf(os.path.join(outPath, dynamic_hd5_filt_filename), 'interventions')
