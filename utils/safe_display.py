@@ -1,5 +1,5 @@
 """
-Utility functions to help with displaying data_preprocessing in a safer, "blinded" way.
+Utility functions to help with displaying preprocessing in a safer, "blinded" way.
 Note: ALWAYS set blinded=True before PUSH
 """
 

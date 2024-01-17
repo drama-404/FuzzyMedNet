@@ -19,7 +19,7 @@ FIG_VITALS_LABS_DIR = os.path.join(FIG_DIR, 'vitals_labs/')
 FIG_DIAGNOSES_DIR = os.path.join(FIG_DIR, 'diagnoses/')
 FIG_INTERVENTIONS_DIR = os.path.join(FIG_DIR, 'interventions/')
 
-PROCESSING_DIR = os.path.join(BASE_DIR, 'src/data_preprocessing/')
+PROCESSING_DIR = os.path.join(BASE_DIR, 'src/preprocessing/')
 
 SCRIPTS_DIR = os.path.join(BASE_DIR, 'sql_queries')
 SCRIPTS_VITAL_SIGNS_DIR = os.path.join(SCRIPTS_DIR, 'vital_signs/')

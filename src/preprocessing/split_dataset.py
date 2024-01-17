@@ -27,24 +27,21 @@ SEED = 1  # Seed for reproducibility
 RANDOM = 0
 
 
-def train_test_dev_split(patients, vitals_labs, interventions, Ys):
-    # # Filter out patients with insufficient data and extract target labels
-    # Ys = patients[patients['max_hours'] > WINDOW_SIZE + GAP_TIME][['mort_hosp', 'mort_icu']]
-    # Ys = patients[['mort_hosp']]
-    # Ys.astype(float)  # Convert to float type
+def train_test_dev_split(patients, vitals_labs, interventions):
+    # Filter out patients with insufficient data and extract target labels
+    Ys = patients[patients['max_hours'] > WINDOW_SIZE + GAP_TIME][['mort_hosp', 'mort_icu']]
+    Ys.astype(float)  # Convert to float type
 
     # Extract static features
     statics = patients.drop(columns=['mort_hosp', 'max_hours'])
 
     # Filter time-series data to only include instances within the observation window
-    # lvl2, interv = [
-    #     df[
-    #         (df.index.get_level_values('icustay_id').isin(set(Ys.index.get_level_values('icustay_id')))) &
-    #         (df.index.get_level_values('hours_in') < WINDOW_SIZE)
-    #     ] for df in (vitals_labs, interventions)
-    # ]
-    lvl2 = vitals_labs
-    interv = interventions
+    lvl2, interv = [
+        df[
+            (df.index.get_level_values('icustay_id').isin(set(Ys.index.get_level_values('icustay_id')))) &
+            (df.index.get_level_values('hours_in') < WINDOW_SIZE)
+        ] for df in (vitals_labs, interventions)
+    ]
 
     # Validate that the subject IDs match across all dataframes
     lvl2_subj_idx, interv_subj_idx, Ys_subj_idx = [
@@ -54,11 +51,11 @@ def train_test_dev_split(patients, vitals_labs, interventions, Ys):
     assert lvl2_subjects == set(Ys_subj_idx), "Subject ID pools differ!"
     assert lvl2_subjects == set(interv_subj_idx), "Subject ID pools differ!"
 
-    # # Randomly shuffle the subject IDs and split them into train, dev, and test sets
-    # np.random.seed(SEED)
-    # subjects, N = np.random.permutation(list(lvl2_subjects)), len(lvl2_subjects)
-    # N_train, N_dev, N_test = int(TRAIN_FRAC * N), int(DEV_FRAC * N), int(TEST_FRAC * N)
-    # train_subj, dev_subj, test_subj = subjects[:N_train], subjects[N_train:N_train + N_dev], subjects[N_train + N_dev:]
+    # Randomly shuffle the subject IDs and split them
+    np.random.seed(SEED)
+    subjects, N = np.random.permutation(list(lvl2_subjects)), len(lvl2_subjects)
+    N_train, N_dev, N_test = int(TRAIN_FRAC * N), int(DEV_FRAC * N), int(TEST_FRAC * N)
+    train_subj, dev_subj, test_subj = subjects[:N_train], subjects[N_train:N_train + N_dev], subjects[N_train + N_dev:]
 
     full_set = patients.loc[Ys_subj_idx]
     train_set, test_set = train_test_split(full_set.reset_index(), test_size=0.2,

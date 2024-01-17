@@ -107,6 +107,9 @@ def plot_hourly_distributions(df, features, valid_ranges):
 
         plt.show()
 
+def append_results(f, results):
+  with open(f, "a") as myfile:
+    myfile.write(results)
 
 def plot_hourly_distributions(df, features, valid_ranges):
     """
